@@ -144,19 +144,15 @@ function startGame(btn) {
   names[0] = document.getElementById('nameP1').value.trim() || 'Player 1';
   names[1] = document.getElementById('nameP2').value.trim() || 'Player 2';
   
-  document.getElementById('scoreNameP1').textContent = names[0];
   document.getElementById('p1PanelTitle').textContent = names[0];
   
   if (gameMode === 'duel') {
-    document.getElementById('scoreNameP2').textContent = names[1];
     document.getElementById('p2PanelTitle').textContent = names[1];
     document.getElementById('modeBadge').textContent = '1V1 DUEL';
-    document.getElementById('scoreCardP2').style.display = 'flex';
     document.getElementById('p2Content').classList.remove('hidden');
     document.getElementById('leaderboardContent').classList.add('hidden');
   } else {
     document.getElementById('modeBadge').textContent = 'SOLO ARCADE';
-    document.getElementById('scoreCardP2').style.display = 'none';
     document.getElementById('p2Content').classList.add('hidden');
     document.getElementById('leaderboardContent').classList.remove('hidden');
     renderLeaderboard();

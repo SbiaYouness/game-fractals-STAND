@@ -53,26 +53,24 @@
         </div>
         <div class="timer-text" id="timerText">02:00</div>
       </div>
+      
+      <div class="top-spacer"></div>
 
-      <div class="scores">
-        <div class="score-pill p1-border">
-          <span class="score-name" id="scoreNameP1">P1</span>
-          <span class="score-value" id="scoreNumP1">0</span>
-        </div>
-        <div class="score-pill p2-border" id="scoreCardP2">
-          <span class="score-name" id="scoreNameP2">P2</span>
-          <span class="score-value" id="scoreNumP2">0</span>
-        </div>
-      </div>
     </header>
 
     <div class="arena">
       <!-- PLAYER 1 ZONE -->
       <div class="zone" id="p1Zone">
         <div class="canvas-card">
-          <div class="card-header">
-            <span class="player-title p1-text" id="p1PanelTitle">Player 1</span>
-            <span class="status-badge p1-bg">Live</span>
+          <div class="card-header" style="justify-content: space-between; display: flex; align-items: center; padding: 0.5rem 1.25rem;">
+            <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+              <span class="player-title p1-text" id="p1PanelTitle">Player 1</span>
+              <span class="status-badge p1-bg" style="width: max-content;">Live</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end;">
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Score</span>
+              <span class="score-value p1-text" id="scoreNumP1" style="font-size: 2.25rem; line-height: 1;">0</span>
+            </div>
           </div>
           <div class="canvas-wrapper">
             <canvas id="p1Canvas"></canvas>
@@ -148,9 +146,15 @@
         <!-- PLAYER 2 CONTENT -->
         <div id="p2Content" style="display:flex; flex-direction:column; gap:1rem; height:100%;">
           <div class="canvas-card">
-            <div class="card-header">
-              <span class="player-title p2-text" id="p2PanelTitle">Player 2</span>
-              <span class="status-badge p2-bg">Live</span>
+            <div class="card-header" style="justify-content: space-between; display: flex; align-items: center; padding: 0.5rem 1.25rem;">
+              <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span class="player-title p2-text" id="p2PanelTitle">Player 2</span>
+                <span class="status-badge p2-bg" style="width: max-content;">Live</span>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Score</span>
+                <span class="score-value p2-text" id="scoreNumP2" style="font-size: 2.25rem; line-height: 1;">0</span>
+              </div>
             </div>
             <div class="canvas-wrapper">
               <canvas id="p2Canvas"></canvas>

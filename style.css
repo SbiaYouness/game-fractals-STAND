@@ -125,7 +125,7 @@ input::placeholder { color: var(--text-muted); text-transform: none; }
 /* GAME SCREEN */
 #gameScreen { padding: 1.5rem 2rem; }
 
-.top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.top-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; margin-bottom: 1.5rem; }
 .branding h2 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.025em; }
 .mode-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent-main); background: rgba(16, 185, 129, 0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem; margin-left: 0.5rem; }
 
