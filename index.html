@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fractal Resonance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- NAME ENTRY SCREEN -->
+  <div class="screen active" id="nameScreen">
+    <div class="card setup-card">
+      <div class="logo-container">
+        <h1 class="logo-main">Fractal Resonance</h1>
+        <p class="logo-sub">PATTERN MATCHING ARCADE</p>
+      </div>
+
+      <div class="mode-selector">
+        <button class="mode-btn active" id="btnModeSolo" onclick="selectMode('solo')">SOLO ARCADE</button>
+        <button class="mode-btn" id="btnModeDuel" onclick="selectMode('duel')">1V1 DUEL</button>
+      </div>
+
+      <div class="input-group">
+        <div class="player-input">
+          <div class="indicator p1-color">P1</div>
+          <input type="text" id="nameP1" placeholder="Enter Player 1 Name" maxlength="12" autocomplete="off">
+        </div>
+        <div class="player-input hidden" id="p2InputGroup">
+          <div class="indicator p2-color">P2</div>
+          <input type="text" id="nameP2" placeholder="Enter Player 2 Name" maxlength="12" autocomplete="off">
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-block" onclick="startGame(this)">INITIALIZE SYSTEM</button>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div class="screen" id="gameScreen">
+    <header class="top-bar">
+      <div class="branding">
+        <h2>Fractal Resonance</h2>
+        <span class="mode-badge" id="modeBadge">SOLO ARCADE</span>
+      </div>
+      
+      <div class="match-info">
+        <div class="round-badge" id="roundChip">Round 1 / 5</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="timerBar"></div>
+        </div>
+        <div class="timer-text" id="timerText">02:00</div>
+      </div>
+
+      <div class="scores">
+        <div class="score-pill p1-border">
+          <span class="score-name" id="scoreNameP1">P1</span>
+          <span class="score-value" id="scoreNumP1">0</span>
+        </div>
+        <div class="score-pill p2-border" id="scoreCardP2">
+          <span class="score-name" id="scoreNameP2">P2</span>
+          <span class="score-value" id="scoreNumP2">0</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="arena">
+      <!-- PLAYER 1 ZONE -->
+      <div class="zone" id="p1Zone">
+        <div class="canvas-card">
+          <div class="card-header">
+            <span class="player-title p1-text" id="p1PanelTitle">Player 1</span>
+            <span class="status-badge p1-bg">Live</span>
+          </div>
+          <div class="canvas-wrapper">
+            <canvas id="p1Canvas"></canvas>
+            <div class="locked-state" id="p1LockMsg">Locked</div>
+          </div>
+        </div>
+        
+        <div class="stats-panel">
+          <div class="stat">
+            <span class="stat-label">Angle</span>
+            <span class="stat-value p1-text" id="p1AngleVal">45&deg;</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Depth</span>
+            <span class="stat-value p1-text" id="p1DepthVal">5</span>
+          </div>
+        </div>
+
+        <div class="controls-panel">
+          <div class="control-row">
+            <div class="keys"><kbd>W</kbd><kbd>S</kbd></div>
+            <span class="desc">Angle</span>
+          </div>
+          <div class="control-row">
+            <div class="keys"><kbd>A</kbd><kbd>D</kbd></div>
+            <span class="desc">Depth</span>
+          </div>
+          <div class="control-row full">
+            <div class="keys"><kbd class="wide">SPACE</kbd></div>
+            <span class="desc">Lock In</span>
+          </div>
+        </div>
+        
+        <!-- SOLO SLIDERS -->
+        <div class="controls-panel hidden" id="soloSliders" style="margin-top:-0.5rem; padding-top:0.5rem; border-top:none; border-top-left-radius:0; border-top-right-radius:0;">
+          <div class="control-row full">
+            <span class="desc">Mouse Angle</span>
+            <input type="range" id="p1AngleSlider" min="0" max="360" value="45" class="range-slider">
+          </div>
+          <div class="control-row full">
+            <span class="desc">Mouse Depth</span>
+            <input type="range" id="p1DepthSlider" min="1" max="10" value="5" class="range-slider">
+          </div>
+        </div>
+      </div>
+
+      <!-- TARGET ZONE -->
+      <div class="zone target-zone">
+        <div class="canvas-card target-card">
+          <div class="card-header">
+            <span class="player-title">Target Pattern</span>
+            <span class="status-badge target-bg" id="targetObjectiveLabel">Objective</span>
+          </div>
+          <div class="canvas-wrapper" style="flex:1;">
+            <canvas id="targetCanvas"></canvas>
+            <div class="blind-shield" id="blindShield">Blind Mode</div>
+            <!-- Solo Feedback Flash -->
+            <div class="feedback-flash hidden" id="feedbackFlash">+100</div>
+          </div>
+          
+          <div class="target-footer">
+            <div class="target-label" id="targetInfo">Fractal Type</div>
+            <div class="math-formula" id="mathFormula">Formula here</div>
+          </div>
+        </div>
+        <div class="blind-timer hidden" id="blindWarning">
+          Memorize: <span id="blindCount">5</span>s
+        </div>
+      </div>
+
+      <!-- RIGHT ZONE (P2 OR LEADERBOARD) -->
+      <div class="zone" id="rightZone">
+        <!-- PLAYER 2 CONTENT -->
+        <div id="p2Content" style="display:flex; flex-direction:column; gap:1rem; height:100%;">
+          <div class="canvas-card">
+            <div class="card-header">
+              <span class="player-title p2-text" id="p2PanelTitle">Player 2</span>
+              <span class="status-badge p2-bg">Live</span>
+            </div>
+            <div class="canvas-wrapper">
+              <canvas id="p2Canvas"></canvas>
+              <div class="locked-state" id="p2LockMsg">Locked</div>
+            </div>
+          </div>
+          
+          <div class="stats-panel">
+            <div class="stat">
+              <span class="stat-label">Angle</span>
+              <span class="stat-value p2-text" id="p2AngleVal">45&deg;</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Depth</span>
+              <span class="stat-value p2-text" id="p2DepthVal">5</span>
+            </div>
+          </div>
+
+          <div class="controls-panel">
+            <div class="control-row">
+              <div class="keys"><kbd>&uarr;</kbd><kbd>&darr;</kbd></div>
+              <span class="desc">Angle</span>
+            </div>
+            <div class="control-row">
+              <div class="keys"><kbd>&larr;</kbd><kbd>&rarr;</kbd></div>
+              <span class="desc">Depth</span>
+            </div>
+            <div class="control-row full">
+              <div class="keys"><kbd class="wide">ENTER &crarr;</kbd></div>
+              <span class="desc">Lock In</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEADERBOARD CONTENT (SOLO MODE) -->
+        <div id="leaderboardContent" class="hidden" style="height:100%;">
+          <div class="canvas-card" style="height:100%; border-color: var(--accent-main);">
+            <div class="card-header" style="background-color: rgba(59, 130, 246, 0.1);">
+              <span class="player-title" style="color: var(--accent-main);">Arcade Top Scores</span>
+              <span class="status-badge" style="background: var(--accent-main); color: white;">Global</span>
+            </div>
+            <div class="leaderboard-wrapper">
+              <table class="leaderboard-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th style="text-align:right;">Score</th>
+                  </tr>
+                </thead>
+                <tbody id="lbTableBody">
+                  <!-- JS Injection -->
+                </tbody>
+              </table>
+            </div>
+            <div style="padding: 1rem; border-top: 1px solid var(--border-color); display: flex; justify-content: center;">
+              <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.5rem 1rem;" onclick="resetLeaderboard()">Clear Standings</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERLAYS -->
+  <!-- Duel Round Result -->
+  <div class="overlay" id="roundOverlay">
+    <div class="modal">
+      <div class="modal-icon">&check;</div>
+      <h2 class="modal-title" id="resultTitle">Round Complete</h2>
+      <p class="modal-subtitle" id="resultSub">Target: Angle 45&deg; | Depth 5</p>
+      
+      <div class="result-cards" id="resultGrid"></div>
+      
+      <button class="btn btn-primary btn-block" onclick="nextRound(this)">Next Round</button>
+    </div>
+  </div>
+
+  <!-- Match/Game Over Overlay -->
+  <div class="overlay" id="matchOverlay">
+    <div class="modal">
+      <div class="modal-icon trophy">&starf;</div>
+      <h2 class="modal-title" id="matchWinnerName">Winner</h2>
+      <p class="modal-subtitle" id="matchSubMsg">Match Complete</p>
+      
+      <div class="final-scores" id="finalScoreRow"></div>
+      
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="rematch(this)">Play Again (Same Players)</button>
+        <button class="btn btn-secondary" onclick="goToMenu(this)">Change Mode / Players</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
